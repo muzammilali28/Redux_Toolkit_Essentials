@@ -4,10 +4,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
-import { store } from "./store/store";
-import { fetchUsers } from './features/users/slice/userSlice';
-
-store.dispatch(fetchUsers());  // Immediate loads this before our application loads.
+import { store } from "./store/store"
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
