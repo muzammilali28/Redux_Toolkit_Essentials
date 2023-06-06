@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 // import { nanoid } from "@reduxjs/toolkit";
 
-import { postAdded } from "../slice/postsSlice"
+import { addNewPost } from "../slice/postsSlice"
 import { selectAllUsers } from "../../users/slice/userSlice"
 
 const AddPostForm = () => {
@@ -14,33 +14,35 @@ const AddPostForm = () => {
     const [title, setTitle] = useState("")
     const [content, setContent] = useState("")
     const [userId, setUserID] = useState("")
+    const [addRequestStatus, setAddRequestStatus] = useState('idle')
 
     const users = useSelector(selectAllUsers)
+
+    const canSubmit = Boolean(title) && Boolean(content) && Boolean(userId) && addRequestStatus === 'idle';
+    console.log(canSubmit)
 
     const postSubmitted = (e) => {
 
         e.preventDefault();
 
-        if (title && content) {
+        if (canSubmit) {
+            try {
+                setAddRequestStatus('pending');
+                
+                // The Unwrap fucntion is part of Redux Toolkit, it return the
+                // action payload or it throws an error if the promise is rejected.
+                dispatch(addNewPost({ title, body: content, userId })).unwrap(); 
+                
+                setTitle("")
+                setContent("")
+                setUserID("")
 
-            // First Method of Dispatch to the Slice
-            // sending the payload manually everytime
-            // if the functionalty is fixed through out.
-            // dispatch(postAdded({
-            //     id: nanoid(),
-            //     title,
-            //     content
-            // }))
-
-            // Second Method is a bit easier, need to implement
-            // the payload login in the Slice, if for a fact that we know
-            // the functionality will be the same always.
-
-            dispatch(postAdded(title, content, userId))
+            } catch (error) {
+                console.log("Failed to save the Post", error);
+            } finally {
+                setAddRequestStatus('idle');
+            }
         }
-
-        setTitle("")
-        setContent("")
     }
 
     // 2nd way to disable a button is by using the
@@ -69,8 +71,8 @@ const AddPostForm = () => {
     // change the disable button functionality
     // This way will only work if there is no state mutation
     // taking place frequently.
-    const canSubmit = Boolean(title) && Boolean(content)
-    console.log(canSubmit)
+    // const canSubmit = Boolean(title) && Boolean(content) && Boolean(userId) && addRequestStatus === 'idle';
+    // console.log(canSubmit)
     // Boolean returns true of the content sent inside is "NOT EMPTY", if empty it will return False
 
     return (
