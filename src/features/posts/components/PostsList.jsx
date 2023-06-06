@@ -19,7 +19,7 @@ const PostsList = () => {
         if (postsStatus === 'idle') {
             dispatch(fetchPosts());
         }
-    }, [postsStatus,dispatch])
+    }, [postsStatus, dispatch])
 
     let content;
 
@@ -34,6 +34,7 @@ const PostsList = () => {
 
         content = postsFetchedAscend.map(
             (post) => (
+                console.log(post),
                 <PostsDisplayed key={post.id} post={post} />
             ))
     }
